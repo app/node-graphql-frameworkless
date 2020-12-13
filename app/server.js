@@ -14,7 +14,9 @@ var resolvers = {
 
 // Merge schemas strings and build object from them
 const schema = buildSchema(`
- ${hello.schema}
+  type Query {
+    ${hello.query}
+  }
 `)
 
 const handlePost = (httpResponse, postBody) => {
