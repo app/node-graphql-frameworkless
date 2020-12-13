@@ -15,8 +15,8 @@ npm run dev
 ```
 To use
 ```
-curl -d '{hello}' http://localhost:3080
-curl -d '{hello(myName:"User")}' http://localhost:3080
+curl -s -d '{hello}' http://localhost:3080
+curl -s -d '{hello(myName:"User")}' http://localhost:3080
 # Schema introspection
 ./utils/graphql-schema.sh
 ```
