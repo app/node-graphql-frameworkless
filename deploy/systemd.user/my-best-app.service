@@ -1,0 +1,11 @@
+[Unit]
+AssertPathExists=/home/apprunner/my-best-app
+
+[Service]
+WorkingDirectory=/home/apprunner/my-best-app
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npm start
+Restart=always
+
+[Install]
+WantedBy=default.target
