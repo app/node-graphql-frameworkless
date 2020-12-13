@@ -12,7 +12,7 @@ To setup systemd service for production deployment of server application
 copy my-best-app.service to user's config foler 
 ```
 mkdir -p /home/apprunner/.config/systemd/user/
-cp install/systemd.user/my-best-app.service /home/apprunner/.config/systemd/user/
+cp deploy/systemd.user/my-best-app.service /home/apprunner/.config/systemd/user/
 ```
 Set user permission to run services when they're not logged in
 ```
