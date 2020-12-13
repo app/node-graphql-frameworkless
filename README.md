@@ -4,7 +4,7 @@ Simple GraphQL API Node.js application — is the best usage case of the templat
 ### How to install and use
 To install  
 ```
-git clone https://github.com/app/node.frameworkless.boilerplate.git my-best-app
+git clone https://github.com/app/node-graphql-frameworkless.git my-best-app
 cd my-best-app
 rm -Rf .git && git init && git add . && git commit -m Import
 npm i
