@@ -5,7 +5,13 @@ import hello from 'hello'
 const { graphql, buildSchema } = gql
 const host = '0.0.0.0'
 const port = '3080'
-const contentType = {'Content-Type': 'application/json'}
+
+const headers = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "X-Requested-With,content-type",
+  "Access-Control-Allow-Credentials": true,
+  "Content-Type": "application/json",
+};
 
 // merge resolvers
 var resolvers = {
@@ -23,7 +29,7 @@ const handlePost = (httpResponse, postBody) => {
   graphql(schema, postBody, resolvers)
     .then( response => {
       const data = response.errors || response.data
-      httpResponse.writeHead(200, contentType)
+      httpResponse.writeHead(200, headers)
       httpResponse.end(JSON.stringify(data))
     });
 }
@@ -33,8 +39,11 @@ function listener (request, response) {
     var body = ''
     request.on('data', data => body += data )
     request.on('end', () => handlePost(response,body))
+  } else if (request.method === "OPTIONS") {
+    response.writeHead(204, headers);
+    response.end();
   } else {
-    response.writeHead(404, contentType)
+    response.writeHead(404, headers)
     response.end(JSON.stringify(`{code:1,message:'Not found'}`))
   }
 }
