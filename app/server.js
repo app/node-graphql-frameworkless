@@ -36,7 +36,7 @@ const handlePost = (httpResponse, postBody) => {
   httpResponse.writeHead(200, headers)
   graphql.graphql(schema, query, resolvers)
     .then( response => {
-      const data = response.errors || response.data
+      const data = response.errors || {data:response.data}
       httpResponse.end(JSON.stringify(data))
     })
     .catch (error => {
