@@ -1,8 +1,7 @@
 import http from 'http'
-import gql from 'graphql'
+import graphql from 'graphql'
 import hello from 'hello'
 
-const { graphql, buildSchema } = gql
 const host = '0.0.0.0'
 const port = '3080'
 
@@ -19,19 +18,30 @@ var resolvers = {
 };
 
 // Merge schemas strings and build object from them
-const schema = buildSchema(`
+const schema = graphql.buildSchema(`
   type Query {
     ${hello.query}
   }
 `)
 
 const handlePost = (httpResponse, postBody) => {
-  graphql(schema, postBody, resolvers)
+  let query = postBody
+  try {
+    query =  JSON.parse(postBody).query.toString()
+  } catch (error) {
+    console.log( `Can not parse query:  ${postBody}` );
+    console.dir(error)
+  }
+
+  httpResponse.writeHead(200, headers)
+  graphql.graphql(schema, query, resolvers)
     .then( response => {
       const data = response.errors || response.data
-      httpResponse.writeHead(200, headers)
       httpResponse.end(JSON.stringify(data))
-    });
+    })
+    .catch (error => {
+      httpResponse.end(error.toString())
+    })
 }
 
 function listener (request, response) {
@@ -50,4 +60,4 @@ function listener (request, response) {
 
 const server = http.createServer(listener)
 server.listen(port, host)
-console.log(`Server running at http://${host}:${port}/`)
+console.log(`Server running at http://${host}:${port}`)
