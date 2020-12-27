@@ -13,9 +13,11 @@
     "graphql": "^15.4.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6",
+    "@graphql-eslint/eslint-plugin": "^0.7.1",
     "eslint": "^6.1.0",
-    "eslint-plugin-jsdoc": "^15.7.2"
+    "eslint-plugin-jsdoc": "^15.7.2",
+    "jsonlint": "^1.6.3",
+    "nodemon": "^2.0.6"
   },
   "eslintConfig": {
     "env": {
@@ -50,6 +52,20 @@
       ],
       "jsdoc/require-jsdoc": 0,
       "jsdoc/require-param-type": 0
-    }
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.graphql",
+          "*.gql"
+        ],
+        "parser": "@graphql-eslint/eslint-plugin",
+        "plugins": [
+          "@graphql-eslint"
+        ],
+        "parserOptions": {
+        }
+      }
+    ]
   }
 }
