@@ -7,15 +7,27 @@ import hello from 'hello'
 const host = '0.0.0.0'
 const port = '3080'
 
-var resolvers = {
-  ...hello.resolvers,
-}
-
 const typeDefs = `
+  ${(hello.schema.Type || '')}
   type Query {
-    ${hello.query}
+    ${hello.schema.Query}
+  }
+  type Mutation {
+    placeHolder: Int
+    ${(hello.schema.Mutation || '')}
   }
 `
+
+var resolvers = {
+  Query: {
+    ...hello.resolvers.Query,
+  },
+  Mutation: {
+    placeHolder: () => 0,
+    ...hello.resolvers.Mutation,
+  },
+  ...hello.resolvers.Custom
+}
 
 const schema = makeExecutableSchema({ typeDefs, resolvers })
 
