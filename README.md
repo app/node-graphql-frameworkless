@@ -13,12 +13,13 @@ To run
 ```
 npm run dev
 ```
-To use
+To run hello graphql query
 ```
-curl -s -d '{hello}' http://localhost:3080
-curl -s -d '{hello(myName:"User")}' http://localhost:3080
-# Schema introspection
-./utils/graphql-schema.sh
+./run-gql.sh hello.gql
+```
+Server's schema introspection query
+```
+./utils/get-schema.sh
 ```
 
 ### Main features
