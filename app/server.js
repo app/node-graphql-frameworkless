@@ -1,63 +1,37 @@
-import http from 'http'
-import graphql from 'graphql'
+import express from 'express'
+import cors from 'cors'
+import { graphqlHTTP } from 'express-graphql'
+import { makeExecutableSchema }  from 'graphql-tools'
 import hello from 'hello'
 
 const host = '0.0.0.0'
 const port = '3080'
 
-const headers = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "X-Requested-With,content-type",
-  "Access-Control-Allow-Credentials": true,
-  "Content-Type": "application/json",
-};
-
-// merge resolvers
 var resolvers = {
   ...hello.resolvers,
-};
+}
 
-// Merge schemas strings and build object from them
-const schema = graphql.buildSchema(`
+const typeDefs = `
   type Query {
     ${hello.query}
   }
-`)
+`
 
-const handlePost = (httpResponse, postBody) => {
-  let query = postBody
-  try {
-    query =  JSON.parse(postBody).query.toString()
-  } catch (error) {
-    console.log( `Can not parse query:  ${postBody}` );
-    console.dir(error)
-  }
+const schema = makeExecutableSchema({ typeDefs, resolvers })
 
-  httpResponse.writeHead(200, headers)
-  graphql.graphql(schema, query, resolvers)
-    .then( response => {
-      const data = response.errors || {data:response.data}
-      httpResponse.end(JSON.stringify(data))
-    })
-    .catch (error => {
-      httpResponse.end(error.toString())
-    })
+const app = express()
+const whiteList = ['http://localhost','*']
+const corsOptions = {
+  origin: (origin, callback) =>  callback(null, whiteList.includes('*') || whiteList.includes(origin)),
+  credentials: true,
 }
-
-function listener (request, response) {
-  if (request.method === 'POST') {
-    var body = ''
-    request.on('data', data => body += data )
-    request.on('end', () => handlePost(response,body))
-  } else if (request.method === "OPTIONS") {
-    response.writeHead(204, headers);
-    response.end();
-  } else {
-    response.writeHead(404, headers)
-    response.end(JSON.stringify(`{code:1,message:'Not found'}`))
+app.use( cors(corsOptions),)
+app.use('/graphql', graphqlHTTP( async (req) => {
+  const context = { req }
+  return {
+    schema: schema,
+    graphiql: true,
+    context,
   }
-}
-
-const server = http.createServer(listener)
-server.listen(port, host)
-console.log(`Server running at http://${host}:${port}`)
+}))
+app.listen(port, host, () => console.log(`Node.js API server is listening on http://${host}:${port}/graphql`))
